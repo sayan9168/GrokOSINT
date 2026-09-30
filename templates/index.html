@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrokOSINT v{{ version }}</title>
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --card: #1a1a24;
+      --border: #2a2a3a;
+      --primary: #7c5cfc;
+      --primary-hover: #6a4ae0;
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+    header { text-align: center; padding: 24px 0 16px; }
+    header h1 {
+      font-size: 1.9rem;
+      background: linear-gradient(90deg, #7c5cfc, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    header p { color: var(--muted); font-size: 0.95rem; }
+    .warning {
+      background: #2a1a1a;
+      border: 1px solid #5c2a2a;
+      color: #fca5a5;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab {
+      flex: 1; min-width: 100px; padding: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--muted); cursor: pointer;
+      text-align: center; font-weight: 600; transition: all 0.2s;
+    }
+    .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px; margin-bottom: 16px;
+    }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+    input, select {
+      width: 100%; padding: 12px 14px; background: #12121a;
+      border: 1px solid var(--border); border-radius: 10px;
+      color: var(--text); font-size: 1rem; margin-bottom: 14px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--primary); }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .row > * { flex: 1; min-width: 140px; }
+    .btn {
+      width: 100%; padding: 14px; background: var(--primary); color: white;
+      border: none; border-radius: 10px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .result { margin-top: 20px; }
+    .metrics {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px; margin-bottom: 16px;
+    }
+    .metric {
+      background: #12121a; border-radius: 10px; padding: 12px; text-align: center;
+    }
+    .metric .label { font-size: 0.75rem; color: var(--muted); }
+    .metric .value { font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+    .section-title { font-size: 1rem; font-weight: 600; margin: 18px 0 10px; color: #c4b5fd; }
+    .list-item {
+      background: #12121a; padding: 10px 14px; border-radius: 8px;
+      margin-bottom: 6px; font-size: 0.9rem;
+    }
+    .list-item a { color: #a78bfa; text-decoration: none; }
+    .list-item a:hover { text-decoration: underline; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 6px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .badge-ok { background: #14532d; color: #86efac; }
+    .badge-no { background: #3f3f46; color: #a1a1aa; }
+    .badge-warn { background: #713f12; color: #fcd34d; }
+    .loading { text-align: center; padding: 30px; color: var(--muted); }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--border);
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    footer { text-align: center; padding: 24px 0; color: var(--muted); font-size: 0.8rem; }
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px; font-size: 0.9rem;
+    }
+    .checkbox-row input { width: auto; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛡️ GrokOSINT</h1>
+      <p>v{{ version }} • Ethical Email + Phone OSINT</p>
+    </header>
+
+    <div class="warning">
+      ⚠️ শুধুমাত্র publicly available data। নিজের অ্যাকাউন্ট বা explicit authorization ছাড়া ব্যবহার করবেন না। Stalking/doxxing অবৈধ।
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="email">📧 Email</div>
+      <div class="tab" data-tab="phone">📱 Phone</div>
+      <div class="tab" data-tab="full">🔗 Full</div>
+    </div>
+
+    <div id="panel-email" class="panel active">
+      <div class="card">
+        <label>Email Address</label>
+        <input type="email" id="email-input" placeholder="someone@gmail.com">
+        <div class="checkbox-row">
+          <input type="checkbox" id="email-deep" checked>
+          <label for="email-deep" style="margin:0">Deep Scan (Holehe if installed)</label>
+        </div>
+        <button class="btn" id="btn-email" onclick="scanEmail()">🔍 Analyze Email</button>
+      </div>
+      <div id="result-email" class="result"></div>
+    </div>
+
+    <div id="panel-phone" class="panel">
+      <div class="card">
+        <label>Phone Number</label>
+        <input type="text" id="phone-input" placeholder="+8801712345678">
+        <div class="row">
+          <div>
+            <label>Region</label>
+            <select id="phone-region">
+              <option value="BD">Bangladesh (BD)</option>
+              <option value="IN">India (IN)</option>
+              <option value="US">USA (US)</option>
+              <option value="GB">UK (GB)</option>
+              <option value="PK">Pakistan (PK)</option>
+            </select>
+          </div>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="phone-deep" checked>
+          <label for="phone-deep" style="margin:0">Deep Scan (Ignorant if installed)</label>
+        </div>
+        <button class="btn" id="btn-phone" onclick="scanPhone()">🔍 Analyze Phone</button>
+      </div>
+      <div id="result-phone" class="result"></div>
+    </div>
+
+    <div id="panel-full" class="panel">
+      <div class="card">
+        <label>Email (optional)</label>
+        <input type="email" id="full-email" placeholder="someone@gmail.com">
+        <label>Phone (optional)</label>
+        <input type="text" id="full-phone" placeholder="+8801712345678">
+        <div class="row">
+          <div>
+            <label>Region</label>
+            <select id="full-region">
+              <option value="BD">Bangladesh</option>
+              <option value="IN">India</option>
+              <option value="US">USA</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" id="btn-full" onclick="scanFull()">🚀 Run Full Scan</button>
+      </div>
+      <div id="result-full" class="result"></div>
+    </div>
+
+    <footer>
+      GrokOSINT • Public data only • Use ethically<br>
+      <a href="https://github.com/sayan9168/GrokOSINT" style="color:#a78bfa">GitHub</a>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    function showLoading(el) {
+      el.innerHTML = `<div class="loading"><div class="spinner"></div>Scanning... please wait</div>`;
+    }
+
+    function badge(ok, text) {
+      const cls = ok === true ? 'badge-ok' : (ok === 'warn' ? 'badge-warn' : 'badge-no');
+      return `<span class="badge ${cls}">${text}</span>`;
+    }
+
+    async function scanEmail() {
+      const email = document.getElementById('email-input').value.trim();
+      const deep = document.getElementById('email-deep').checked;
+      const btn = document.getElementById('btn-email');
+      const box = document.getElementById('result-email');
+      if (!email) return alert('Email দিন');
+      btn.disabled = true;
+      showLoading(box);
+      try {
+        const res = await fetch('/api/email', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({email, deep})
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Failed');
+
+        let html = `<div class="card"><div class="metrics">
+          <div class="metric"><div class="label">Valid</div><div class="value">${data.validation.is_valid ? '✓ Yes' : '✗ No'}</div></div>
+          <div class="metric"><div class="label">Gmail</div><div class="value">${data.validation.is_gmail ? 'Yes' : 'No'}</div></div>
+          <div class="metric"><div class="label">Has MX</div><div class="value">${data.has_mx ? 'Yes' : 'No'}</div></div>
+          <div class="metric"><div class="label">Disposable</div><div class="value">${data.validation.is_disposable ? '⚠ Yes' : 'No'}</div></div>
+        </div>`;
+
+        if (data.gravatar && data.gravatar.has_gravatar) {
+          html += `<div class="section-title">Gravatar</div><div class="list-item">Profile found ${data.gravatar.profile_url ? '— <a href="'+data.gravatar.profile_url+'" target="_blank">View</a>' : ''}</div>`;
+        }
+        if (data.username_guesses && data.username_guesses.length) {
+          html += `<div class="section-title">👤 Username Guesses</div><div class="list-item">${data.username_guesses.join(' • ')}</div>`;
+        }
+        if (data.account_checks && data.account_checks.length) {
+          html += `<div class="section-title">🔎 Account Checks</div>`;
+          data.account_checks.forEach(a => {
+            html += `<div class="list-item"><strong>${a.name}</strong> ${a.found ? badge(true,'FOUND') : badge(false,'not found')} ${a.details && a.details.length ? ' → ' + a.details.join(', ') : ''}</div>`;
+          });
+        }
+        if (data.holehe_results && data.holehe_results.length) {
+          html += `<div class="section-title">🕵️ Holehe Platforms</div>`;
+          data.holehe_results.forEach(h => { html += `<div class="list-item">${h}</div>`; });
+        }
+        if (data.social_profiles && data.social_profiles.length) {
+          html += `<div class="section-title">🔗 Quick Links</div>`;
+          data.social_profiles.slice(0,8).forEach(s => {
+            html += `<div class="list-item"><a href="${s.url}" target="_blank">${s.platform}</a></div>`;
+          });
+        }
+        if (data.notes && data.notes.length) {
+          html += `<div class="section-title">Notes</div>`;
+          data.notes.forEach(n => { html += `<div class="list-item">• ${n}</div>`; });
+        }
+        html += `<p style="margin-top:14px;color:var(--muted);font-size:0.85rem">Reports saved in <code>reports/</code> folder</p></div>`;
+        box.innerHTML = html;
+      } catch (e) {
+        box.innerHTML = `<div class="card" style="border-color:#5c2a2a;color:#fca5a5">Error: ${e.message}</div>`;
+      }
+      btn.disabled = false;
+    }
+
+    async function scanPhone() {
+      const phone = document.getElementById('phone-input').value.trim();
+      const region = document.getElementById('phone-region').value;
+      const deep = document.getElementById('phone-deep').checked;
+      const btn = document.getElementById('btn-phone');
+      const box = document.getElementById('result-phone');
+      if (!phone) return alert('Phone number দিন');
+      btn.disabled = true;
+      showLoading(box);
+      try {
+        const res = await fetch('/api/phone', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({phone, region, deep})
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Failed');
+        const v = data.validation;
+        let html = `<div class="card"><div class="metrics">
+          <div class="metric"><div class="label">Valid</div><div class="value">${v.is_valid ? '✓ Yes' : (v.is_possible ? 'Possible' : 'No')}</div></div>
+          <div class="metric"><div class="label">Country</div><div class="value">${v.country_name || '-'}</div></div>
+          <div class="metric"><div class="label">Carrier</div><div class="value">${v.carrier || 'Unknown'}</div></div>
+          <div class="metric"><div class="label">Type</div><div class="value">${v.number_type || '-'}</div></div>
+        </div>
+        <div class="section-title">Formats</div>
+        <div class="list-item">E.164: <code>${v.e164 || '-'}</code></div>
+        <div class="list-item">National: <code>${v.national || '-'}</code></div>`;
+        if (data.possible_apps && data.possible_apps.length) {
+          html += `<div class="section-title">📲 Possible Apps</div><div class="list-item">${data.possible_apps.join(' • ')}</div>`;
+        }
+        if (data.social_links && data.social_links.length) {
+          html += `<div class="section-title">🔗 Quick Links</div>`;
+          data.social_links.forEach(s => {
+            html += `<div class="list-item"><a href="${s.url}" target="_blank">${s.name}</a></div>`;
+          });
+        }
+        if (data.notes && data.notes.length) {
+          html += `<div class="section-title">Notes</div>`;
+          data.notes.forEach(n => { html += `<div class="list-item">• ${n}</div>`; });
+        }
+        html += `<p style="margin-top:14px;color:var(--muted);font-size:0.85rem">Reports saved in reports/</p></div>`;
+        box.innerHTML = html;
+      } catch (e) {
+        box.innerHTML = `<div class="card" style="border-color:#5c2a2a;color:#fca5a5">Error: ${e.message}</div>`;
+      }
+      btn.disabled = false;
+    }
+
+    async function scanFull() {
+      const email = document.getElementById('full-email').value.trim();
+      const phone = document.getElementById('full-phone').value.trim();
+      const region = document.getElementById('full-region').value;
+      const btn = document.getElementById('btn-full');
+      const box = document.getElementById('result-full');
+      if (!email && !phone) return alert('Email অথবা Phone দিন');
+      btn.disabled = true;
+      showLoading(box);
+      try {
+        const res = await fetch('/api/full', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({email, phone, region, deep: true})
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Failed');
+        let html = `<div class="card">`;
+        if (data.email) {
+          html += `<div class="section-title">📧 Email</div>
+            <div class="list-item">${data.email.input} | Valid: ${data.email.is_valid} | Gmail: ${data.email.is_gmail}</div>`;
+        }
+        if (data.phone) {
+          html += `<div class="section-title">📱 Phone</div>
+            <div class="list-item">${data.phone.input} | ${data.phone.e164 || ''} | ${data.phone.country || ''}</div>`;
+        }
+        html += `<p style="margin-top:14px;color:var(--muted);font-size:0.85rem">Report saved in reports/</p></div>`;
+        box.innerHTML = html;
+      } catch (e) {
+        box.innerHTML = `<div class="card" style="border-color:#5c2a2a;color:#fca5a5">Error: ${e.message}</div>`;
+      }
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>
