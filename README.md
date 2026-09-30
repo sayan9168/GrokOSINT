@@ -1,8 +1,8 @@
-# 🛡️ GrokOSINT v1.1.0
+# 🛡️ GrokOSINT v1.2.0
 
 **Advanced Ethical OSINT Tool for Email (Gmail) + Phone Number Intelligence**
 
-> Publicly available data only • Beautiful terminal UI • JSON + Markdown export
+> Public data only • CLI + Streamlit Web UI • JSON / Markdown / **PDF** reports • Holehe + Ignorant integration
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -10,45 +10,26 @@
 
 ---
 
-## ⚠️ Ethical & Legal Warning (বাধ্যতামূলক পড়ুন)
+## ⚠️ Ethical & Legal Warning
 
 ```
-এই টুল শুধুমাত্র publicly available তথ্য সংগ্রহ করে।
-This tool collects ONLY publicly available information.
-
-• শুধু নিজের অ্যাকাউন্ট বা explicit written authorization থাকা টার্গেটে ব্যবহার করুন।
-• Stalking, doxxing, harassment, unauthorized investigation = অবৈধ।
-• Bangladesh / India / যেকোনো দেশের privacy আইন মেনে চলুন।
-• Author কোনো অপব্যবহারের দায় নেয় না।
+শুধুমাত্র publicly available তথ্য।
+Only use on accounts/numbers you own or have explicit written authorization.
+Stalking / doxxing / harassment = ILLEGAL.
 ```
-
-**By using this tool you agree to use it only for authorized, ethical purposes.**
 
 ---
 
-## ✨ What's New in v1.1.0 (Advanced Features)
+## ✨ What's New in v1.2.0
 
 | Feature | Description |
 |---------|-------------|
-| **Account Existence Checks** | GitHub + Keybase public lookup for email |
-| **Public Paste Search** | psbdmp.ws integration for leaked pastes |
-| **Username Guesses** | Smart variants from email local-part |
-| **Possible Apps** | Heuristic WhatsApp/Telegram/Imo etc. for phone |
-| **Better Dorks** | More targeted Google dorks for email & phone |
-| **Region Notes** | Bangladesh & India specific operator hints |
-| **Improved Reports** | All new fields exported to JSON + Markdown |
-
----
-
-## ✨ Full Feature List
-
-| Module | Capabilities |
-|--------|--------------|
-| **Email** | Format + MX, Disposable detection, Gravatar profile, Account checks (GitHub/Keybase), Public paste hits, Username guesses, Social search links, Google Dorks, Optional HIBP |
-| **Phone** | Full parse (E.164/National/International), Country/Region/Carrier/Line-type/Timezone, Possible linked apps, Social lookup links, Google Dorks, Optional NumVerify |
-| **Combined** | `full` command runs both → unified report |
-| **Export** | Automatic JSON + Markdown reports |
-| **UI** | Rich colored tables, progress spinners, clean CLI |
+| **Streamlit Web UI** | Beautiful browser interface (`streamlit run streamlit_app.py`) |
+| **Holehe Integration** | Optional deep email platform checks (120+ sites) if `holehe` installed |
+| **Ignorant Integration** | Optional WhatsApp / Instagram / Snapchat check if `ignorant` installed |
+| **PDF Reports** | Professional PDF export via reportlab |
+| **More Platforms** | GitHub, Keybase, About.me, Spotify, GitLab, Reddit account checks |
+| **Expanded Links** | Medium, Dev.to, Pinterest, TikTok etc. |
 
 ---
 
@@ -59,87 +40,53 @@ git clone https://github.com/sayan9168/GrokOSINT.git
 cd GrokOSINT
 
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-
+source venv/bin/activate
 pip install -r requirements.txt
-# or
-pip install -e .
+
+# Optional deep tools
+pip install holehe ignorant
 ```
 
-### Run
+### CLI
 
 ```bash
-# Email (with advanced checks)
 python main.py email someone@gmail.com
-
-# Phone (Bangladesh default)
 python main.py phone +8801712345678
-
-# Phone India
-python main.py phone 9876543210 --region IN
-
-# Both together
-python main.py full --email someone@gmail.com --phone +8801712345678
-
-# Skip confirmation
-python main.py email test@example.com --yes --no-export
-
-# About
+python main.py full -e someone@gmail.com -p +8801712345678
 python main.py about
 ```
 
-After `pip install -e .`:
+### Web UI (Streamlit)
 
 ```bash
-grokosint email someone@gmail.com
-grokosint phone +8801xxxxxxxxx
-grokosint full -e mail@gmail.com -p +8801xxxxxxxxx
+streamlit run streamlit_app.py
 ```
 
----
-
-## 📦 Optional API Keys
-
-Copy `config.example.yaml` → `config.yaml` and add:
-
-| Service | Purpose |
-|---------|---------|
-| Have I Been Pwned | Breach check |
-| NumVerify | Extra carrier data |
-
-Tool works 100% without any API keys.
+Open the browser URL shown (usually http://localhost:8501).
 
 ---
 
-## 📂 Project Structure
+## Features Overview
 
-```
-GrokOSINT/
-├── main.py
-├── pyproject.toml
-├── requirements.txt
-├── config.example.yaml
-├── grok_osint/
-│   ├── __init__.py
-│   ├── cli.py
-│   ├── core/
-│   │   ├── validator.py
-│   │   ├── reporter.py
-│   │   └── utils.py
-│   └── modules/
-│       ├── email_osint.py   # Advanced
-│       └── phone_osint.py   # Advanced
-└── reports/
+**Email:** Validation, MX, Disposable, Gravatar, Account checks (6+ platforms), Username guesses, Holehe (optional), Public pastes, Social links, Google Dorks, HIBP (optional), PDF/JSON/MD export
+
+**Phone:** Full parse, Carrier/Type/Timezone, Possible apps, Ignorant (optional), Social links, Google Dorks, NumVerify (optional), PDF/JSON/MD export
+
+---
+
+## Optional Dependencies
+
+```bash
+pip install holehe      # deep email account discovery
+pip install ignorant    # WhatsApp / IG / Snapchat phone check
 ```
 
----
-
-## ⚖️ License
-
-MIT License — free to use, modify, distribute.
-
-**Use it to protect, not to harm.**
+Without them the tool still works with all built-in free checks.
 
 ---
 
-**Built with ❤️ by [Sayan the researcher](https://github.com/sayan9168)**
+## License
+
+MIT — Use ethically.
+
+**Built by [Sayan the researcher](https://github.com/sayan9168)**
