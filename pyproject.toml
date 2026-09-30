@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grokosint"
+version = "1.0.0"
+description = "Advanced Ethical OSINT tool for Email (Gmail) + Phone Number intelligence. Public data only."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Sayan the researcher", email = "sm6881164@gmail.com"}
+]
+keywords = ["osint", "email", "phone", "reconnaissance", "security", "ethical"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Internet",
+]
+dependencies = [
+    "typer[all]>=0.12.0",
+    "rich>=13.7.0",
+    "phonenumbers>=8.13.0",
+    "dnspython>=2.6.0",
+    "requests>=2.31.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.7.0",
+    "python-dotenv>=1.0.0",
+    "aiohttp>=3.9.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.2.0",
+    "pyyaml>=6.0.0",
+    "markdown>=3.6",
+    "jinja2>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "ruff"]
+
+[project.scripts]
+grokosint = "grok_osint.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/sayan9168/GrokOSINT"
+Repository = "https://github.com/sayan9168/GrokOSINT"
+Issues = "https://github.com/sayan9168/GrokOSINT/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["grok_osint*"]
