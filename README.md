@@ -1,87 +1,75 @@
-# 🛡️ GrokOSINT v1.2.0
+# 🛡️ GrokOSINT v1.2.1
 
 **Advanced Ethical OSINT Tool for Email (Gmail) + Phone Number Intelligence**
 
-> Public data only • CLI + Streamlit Web UI • JSON / Markdown / **PDF** reports • Holehe + Ignorant integration
+> Public data only • CLI + **Flask Web UI** (Termux friendly) • JSON / Markdown / PDF reports
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Ethical Use](https://img.shields.io/badge/Use-Ethical%20Only-red.svg)]()
 
 ---
 
-## ⚠️ Ethical & Legal Warning
+## ⚠️ Ethical Warning
 
-```
-শুধুমাত্র publicly available তথ্য।
-Only use on accounts/numbers you own or have explicit written authorization.
-Stalking / doxxing / harassment = ILLEGAL.
-```
+শুধুমাত্র publicly available data।  
+Only use on accounts/numbers you own or have explicit authorization.  
+Stalking / doxxing = ILLEGAL.
 
 ---
 
-## ✨ What's New in v1.2.0
+## ✨ Features
 
-| Feature | Description |
-|---------|-------------|
-| **Streamlit Web UI** | Beautiful browser interface (`streamlit run streamlit_app.py`) |
-| **Holehe Integration** | Optional deep email platform checks (120+ sites) if `holehe` installed |
-| **Ignorant Integration** | Optional WhatsApp / Instagram / Snapchat check if `ignorant` installed |
-| **PDF Reports** | Professional PDF export via reportlab |
-| **More Platforms** | GitHub, Keybase, About.me, Spotify, GitLab, Reddit account checks |
-| **Expanded Links** | Medium, Dev.to, Pinterest, TikTok etc. |
+- Email OSINT (MX, Gravatar, Account checks, Holehe optional, Pastes, Dorks...)
+- Phone OSINT (Carrier, Type, Timezone, Ignorant optional, Apps heuristic...)
+- **Flask Web UI** (lightweight, works great on Termux)
+- CLI with Rich
+- JSON + Markdown + PDF reports
+- Optional: Holehe + Ignorant
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Install (Termux friendly)
 
 ```bash
+pkg update && pkg upgrade -y
+pkg install python git
+# Optional but recommended for numpy if needed later
+# pkg install python-numpy
+
 git clone https://github.com/sayan9168/GrokOSINT.git
 cd GrokOSINT
 
-python -m venv venv
-source venv/bin/activate
 pip install -r requirements.txt
 
 # Optional deep tools
 pip install holehe ignorant
 ```
 
-### CLI
+---
 
+## Usage
+
+### CLI
 ```bash
 python main.py email someone@gmail.com
 python main.py phone +8801712345678
 python main.py full -e someone@gmail.com -p +8801712345678
-python main.py about
 ```
 
-### Web UI (Streamlit)
-
+### Web UI (Flask - Recommended on Termux)
 ```bash
-streamlit run streamlit_app.py
+python web_app.py
 ```
+তারপর ব্রাউজারে খোলো: **http://127.0.0.1:5000**
 
-Open the browser URL shown (usually http://localhost:8501).
+(মোবাইল থেকে অন্য ডিভাইস দিয়ে এক্সেস করতে চাইলে একই WiFi-তে থাকো এবং Termux-এ দেখানো IP ব্যবহার করো)
 
 ---
 
-## Features Overview
+## Why Flask instead of Streamlit?
 
-**Email:** Validation, MX, Disposable, Gravatar, Account checks (6+ platforms), Username guesses, Holehe (optional), Public pastes, Social links, Google Dorks, HIBP (optional), PDF/JSON/MD export
-
-**Phone:** Full parse, Carrier/Type/Timezone, Possible apps, Ignorant (optional), Social links, Google Dorks, NumVerify (optional), PDF/JSON/MD export
-
----
-
-## Optional Dependencies
-
-```bash
-pip install holehe      # deep email account discovery
-pip install ignorant    # WhatsApp / IG / Snapchat phone check
-```
-
-Without them the tool still works with all built-in free checks.
+Streamlit needs numpy + heavy dependencies → Termux-এ install কষ্টকর।  
+Flask অনেক হালকা এবং Termux-এ পারফেক্ট কাজ করে।
 
 ---
 
