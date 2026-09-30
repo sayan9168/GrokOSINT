@@ -1,4 +1,4 @@
-# 🛡️ GrokOSINT
+# 🛡️ GrokOSINT v1.1.0
 
 **Advanced Ethical OSINT Tool for Email (Gmail) + Phone Number Intelligence**
 
@@ -26,29 +26,33 @@ This tool collects ONLY publicly available information.
 
 ---
 
-## ✨ Features
+## ✨ What's New in v1.1.0 (Advanced Features)
+
+| Feature | Description |
+|---------|-------------|
+| **Account Existence Checks** | GitHub + Keybase public lookup for email |
+| **Public Paste Search** | psbdmp.ws integration for leaked pastes |
+| **Username Guesses** | Smart variants from email local-part |
+| **Possible Apps** | Heuristic WhatsApp/Telegram/Imo etc. for phone |
+| **Better Dorks** | More targeted Google dorks for email & phone |
+| **Region Notes** | Bangladesh & India specific operator hints |
+| **Improved Reports** | All new fields exported to JSON + Markdown |
+
+---
+
+## ✨ Full Feature List
 
 | Module | Capabilities |
 |--------|--------------|
-| **Email** | Format validation, MX records, Disposable detection, Gravatar profile, Social search links, Google Dorks, Optional HIBP |
-| **Phone** | Full parse (E.164/National/International), Country/Region/Carrier/Line-type/Timezone, Social lookup links, Google Dorks, Optional NumVerify |
-| **Combined** | Run both together → unified report |
-| **Export** | JSON + Markdown reports automatically |
+| **Email** | Format + MX, Disposable detection, Gravatar profile, Account checks (GitHub/Keybase), Public paste hits, Username guesses, Social search links, Google Dorks, Optional HIBP |
+| **Phone** | Full parse (E.164/National/International), Country/Region/Carrier/Line-type/Timezone, Possible linked apps, Social lookup links, Google Dorks, Optional NumVerify |
+| **Combined** | `full` command runs both → unified report |
+| **Export** | Automatic JSON + Markdown reports |
 | **UI** | Rich colored tables, progress spinners, clean CLI |
-
-### Advanced Features
-- Async HTTP requests
-- Configurable API keys (optional deeper checks)
-- Region-aware phone parsing (default BD)
-- Ready-to-copy Google Dorks
-- One-command full investigation
-- Modular architecture (easy to extend)
 
 ---
 
 ## 🚀 Quick Start
-
-### 1. Clone & Install
 
 ```bash
 git clone https://github.com/sayan9168/GrokOSINT.git
@@ -62,36 +66,29 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 2. (Optional) Config
+### Run
 
 ```bash
-cp config.example.yaml config.yaml
-# Edit and add API keys if you have them (HIBP, NumVerify etc.)
-```
-
-### 3. Run
-
-```bash
-# Email only
+# Email (with advanced checks)
 python main.py email someone@gmail.com
 
-# Phone only (Bangladesh default)
+# Phone (Bangladesh default)
 python main.py phone +8801712345678
 
-# Phone with different region
+# Phone India
 python main.py phone 9876543210 --region IN
 
 # Both together
 python main.py full --email someone@gmail.com --phone +8801712345678
 
-# Skip confirmation (automation)
+# Skip confirmation
 python main.py email test@example.com --yes --no-export
 
 # About
 python main.py about
 ```
 
-After install with `pip install -e .` you can also use:
+After `pip install -e .`:
 
 ```bash
 grokosint email someone@gmail.com
@@ -103,13 +100,14 @@ grokosint full -e mail@gmail.com -p +8801xxxxxxxxx
 
 ## 📦 Optional API Keys
 
-| Service | Purpose | Free Tier |
-|---------|---------|-----------|
-| [Have I Been Pwned](https://haveibeenpwned.com/API/Key) | Breach check | Paid for API |
-| [NumVerify](https://numverify.com) | Extra carrier data | 100/month free |
-| Hunter.io / EmailRep | Enrichment | Limited free |
+Copy `config.example.yaml` → `config.yaml` and add:
 
-Leave empty → tool still works with 100% free public sources.
+| Service | Purpose |
+|---------|---------|
+| Have I Been Pwned | Breach check |
+| NumVerify | Extra carrier data |
+
+Tool works 100% without any API keys.
 
 ---
 
@@ -117,33 +115,22 @@ Leave empty → tool still works with 100% free public sources.
 
 ```
 GrokOSINT/
-├── main.py                 # Entry point
+├── main.py
 ├── pyproject.toml
 ├── requirements.txt
 ├── config.example.yaml
 ├── grok_osint/
 │   ├── __init__.py
-│   ├── cli.py              # Typer CLI
+│   ├── cli.py
 │   ├── core/
-│   │   ├── validator.py    # Email + Phone validation
-│   │   ├── reporter.py     # JSON / Markdown export
+│   │   ├── validator.py
+│   │   ├── reporter.py
 │   │   └── utils.py
 │   └── modules/
-│       ├── email_osint.py  # Email intelligence
-│       └── phone_osint.py  # Phone intelligence
-└── reports/                # Generated reports (auto-created)
+│       ├── email_osint.py   # Advanced
+│       └── phone_osint.py   # Advanced
+└── reports/
 ```
-
----
-
-## 🛠️ Extending
-
-Want more sources?
-1. Add new methods in `email_osint.py` / `phone_osint.py`
-2. Call them inside `run_async`
-3. Display + export automatically picks them up
-
-Ideas: Holehe integration, Ignorant (WhatsApp/IG), GHunt wrapper, Pastebin deep search, etc.
 
 ---
 
@@ -151,18 +138,8 @@ Ideas: Holehe integration, Ignorant (WhatsApp/IG), GHunt wrapper, Pastebin deep 
 
 MIT License — free to use, modify, distribute.
 
-**But remember: with great power comes great responsibility.**
-
----
-
-## 🙏 Credits
-
-- [phonenumbers](https://github.com/daviddrysdale/python-phonenumbers) (libphonenumber)
-- [Rich](https://github.com/Textualize/rich) & [Typer](https://github.com/tiangolo/typer)
-- OSINT community (Holehe, PhoneInfoga, GHunt inspiration)
+**Use it to protect, not to harm.**
 
 ---
 
 **Built with ❤️ by [Sayan the researcher](https://github.com/sayan9168)**
-
-*Use it to protect, not to harm.*
