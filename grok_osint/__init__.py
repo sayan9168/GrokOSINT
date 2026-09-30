@@ -3,7 +3,7 @@ GrokOSINT - Advanced Ethical OSINT Tool for Email + Phone Intelligence
 Publicly available data only. Authorized use only.
 """
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 __author__ = "Sayan the researcher"
 __license__ = "MIT"
 
