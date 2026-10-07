@@ -1,5 +1,5 @@
-"""GrokOSINT v4.0 — Full Spectrum OSINT · latest frameworks · relationship graph."""
-__version__ = "4.0.0"
+"""GrokOSINT v5.0 — Mega OSINT platform · playbooks · graph · Docker."""
+__version__ = "5.0.0"
 __author__ = "Sayan the researcher"
 __license__ = "MIT"
 
