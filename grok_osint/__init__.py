@@ -1,5 +1,5 @@
-"""GrokOSINT v3.5 — All facilities in one ethical OSINT tool."""
-__version__ = "3.5.0"
+"""GrokOSINT v4.0 — Full Spectrum OSINT · latest frameworks · relationship graph."""
+__version__ = "4.0.0"
 __author__ = "Sayan the researcher"
 __license__ = "MIT"
 
