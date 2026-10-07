@@ -1,77 +1,62 @@
-# 🛡️ GrokOSINT v1.4.0
+# 🛡️ GrokOSINT v2.0
 
-**Advanced Ethical OSINT — Email + Phone + Username (500+ platforms)**
+**All-in-one Ethical OSINT Platform** — compete with the big toolkits using free/public data.
 
-> Public data only · Flask Web UI (Termux friendly) · JSON / Markdown / PDF
+| Module | Capability |
+|--------|------------|
+| 📧 **Email** | Validation, MX, Gravatar, Holehe (~120), pastes, dorks |
+| 📱 **Phone** | Carrier, type, timezone, Ignorant, public lookups |
+| 👤 **Username** | **Maigret top 500–1000+ sites** |
+| 🌐 **Domain** | DNS (A/AAAA/MX/NS/TXT), SPF/DMARC, subdomains, CT (crt.sh), WHOIS links |
+| 🔢 **IP** | Geo, ASN/ISP, rDNS, VT/Shodan/AbuseIPDB links |
+
+> Public data only · Flask Web UI · CLI · JSON / Markdown / PDF reports
 
 ---
 
-## ⚠️ Ethical Warning
+## ⚠️ Ethics
 
-Only use on accounts/numbers/usernames you **own** or have **explicit authorization**.  
-Stalking / doxxing is **illegal**.
-
----
-
-## Scale
-
-| Module | Platforms (approx) |
-|--------|---------------------|
-| **Holehe** (email) | ~120 sites |
-| **Maigret** (username) | **Top 500** default (up to 3000+) |
-| Built-in checks | GitHub, Keybase, Reddit, social links, dorks… |
-| **Ignorant** (phone) | WhatsApp / IG / Snapchat (optional) |
-
-Deep email scan = Holehe + Maigret on guessed username → **500–600+ checks**.
+Use only with authorization. Stalking / doxxing is illegal.  
+Not a replacement for Maltego/SpiderFoot enterprise workflows — a fast, free, Termux-friendly suite.
 
 ---
 
 ## Install
 
 ```bash
-pkg update && pkg upgrade -y   # Termux
-pkg install python git
 git clone https://github.com/sayan9168/GrokOSINT.git
 cd GrokOSINT
 pip install -r requirements.txt
 
-# Recommended for large scans:
+# Optional power-ups
 pip install holehe ignorant maigret
 ```
 
----
+## Run
 
-## Usage
-
-### Web UI
 ```bash
 python web_app.py
-```
-Open **http://127.0.0.1:5000**
-
-- **Email** — validation, MX, Gravatar, Holehe, Maigret (500 sites on username)
-- **Phone** — carrier, apps, public lookups, Ignorant
-- **Username** — dedicated **top 500 / 600 / 1000** site scan
-- **Full** — email + phone together
-
-### CLI
-```bash
-python main.py email someone@gmail.com
-python main.py phone +8801712345678
+# → http://127.0.0.1:5000
 ```
 
-### Maigret alone (CLI)
 ```bash
-maigret johndoe --top-sites 500
-maigret johndoe --top-sites 600
+python main.py email user@gmail.com
+python main.py phone +8801XXXXXXXXX
 ```
 
 ---
 
-## Notes
+## vs big OSINT tools
 
-- First Maigret run can take **1–5 minutes** (500 sites).
-- Without Maigret installed, username tab still does a small fallback check set.
-- Use ethically. MIT License.
+| Need | GrokOSINT | Classic |
+|------|-----------|--------|
+| Email account map | Holehe | holehe / h8mail |
+| Username @ 500 sites | Maigret | Maigret / Sherlock |
+| Domain DNS + CT | Built-in | recon-ng / amass |
+| IP geo + rep links | Built-in | ipinfo / VT |
+| Mobile / Termux | Yes | Often heavy |
+| Cost | Free | Often paid |
 
-**Built by [Sayan the researcher](https://github.com/sayan9168)**
+---
+
+MIT · Built by [Sayan the researcher](https://github.com/sayan9168)
