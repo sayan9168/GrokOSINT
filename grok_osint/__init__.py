@@ -1,5 +1,5 @@
-"""GrokOSINT v5.0 — Mega OSINT platform · playbooks · graph · Docker."""
-__version__ = "5.0.0"
+"""GrokOSINT v6.0 — Case Manager · Correlator · Timeline · Full Spectrum Nexus."""
+__version__ = "6.0.0"
 __author__ = "Sayan the researcher"
 __license__ = "MIT"
 
