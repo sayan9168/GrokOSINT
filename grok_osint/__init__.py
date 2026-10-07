@@ -1,6 +1,5 @@
-"""GrokOSINT v3 — Extreme Kali-style Ethical OSINT Arsenal"""
-
-__version__ = "3.0.0"
+"""GrokOSINT v3.5 — All facilities in one ethical OSINT tool."""
+__version__ = "3.5.0"
 __author__ = "Sayan the researcher"
 __license__ = "MIT"
 

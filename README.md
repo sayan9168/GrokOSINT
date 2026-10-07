@@ -1,24 +1,18 @@
-# 🛡️ GrokOSINT v3.0 — Extreme OSINT Arsenal
+# 🛡️ GrokOSINT v3.5 — All Facilities in One Tool
 
-**Kali-companion** ethical OSINT suite: **50+ tools** in Store, built-in engines, **Pipeline** chaining.
+| Area | Features |
+|------|----------|
+| Identity | Email, Phone, Username (Maigret), Holehe |
+| Network | Domain DNS/CT, IP geo/ASN |
+| History | Wayback archive |
+| Automation | Pipeline + **Batch** multi-target |
+| Utils | Permute, hash ID, social/breach/image links, scan history |
+| Store | 50+ classic OSINT tools |
 
-## Built-in
-Email · Phone · Username (Maigret) · Domain · IP · Wayback · **Pipeline** · **Tool Store**
-
-## Install
 ```bash
 git clone https://github.com/sayan9168/GrokOSINT.git && cd GrokOSINT
-pip install -r requirements.txt && pip install holehe maigret ignorant
+pip install -r requirements.txt holehe maigret ignorant
 python web_app.py
 ```
 
-### Kali
-```bash
-bash scripts/kali_setup.sh
-source .venv/bin/activate && python web_app.py
-```
-
-## Ethics
-Authorized use only. Store lists nmap/nuclei/ffuf — use only with permission.
-
-MIT · [Sayan](https://github.com/sayan9168)
+MIT · Authorized use only · [Sayan](https://github.com/sayan9168)
