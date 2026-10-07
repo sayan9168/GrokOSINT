@@ -1,57 +1,42 @@
-# 🛡️ GrokOSINT v1.3.0
+# 🛡️ GrokOSINT v1.4.0
 
-**Advanced Ethical OSINT Tool for Email + Phone Number Intelligence**
+**Advanced Ethical OSINT — Email + Phone + Username (500+ platforms)**
 
-> Public data only • CLI + **Flask Web UI** (Termux friendly) • JSON / Markdown / PDF reports
+> Public data only · Flask Web UI (Termux friendly) · JSON / Markdown / PDF
 
 ---
 
 ## ⚠️ Ethical Warning
 
-Only use on accounts/numbers you own or have **explicit authorization**.  
+Only use on accounts/numbers/usernames you **own** or have **explicit authorization**.  
 Stalking / doxxing is **illegal**.
 
 ---
 
-## ✨ Features (v1.3)
+## Scale
 
-### Email OSINT
-- Validation, disposable detection, Gmail detection
-- MX / A / NS / SPF records
-- Gravatar profile + avatar
-- Username guessing + multi-platform username checks
-- Account existence: GitHub, Keybase, About.me, GitLab, Reddit + more
-- Holehe integration (120+ platforms) when installed
-- Public paste search (psbdmp)
-- Google / DuckDuckGo / Bing dorks
-- HIBP support (optional API key)
-- Rich social & search quick links
+| Module | Platforms (approx) |
+|--------|---------------------|
+| **Holehe** (email) | ~120 sites |
+| **Maigret** (username) | **Top 500** default (up to 3000+) |
+| Built-in checks | GitHub, Keybase, Reddit, social links, dorks… |
+| **Ignorant** (phone) | WhatsApp / IG / Snapchat (optional) |
 
-### Phone OSINT
-- libphonenumber validation (E.164, carrier, line type, timezone)
-- Possible apps heuristic (WhatsApp, Telegram, Signal, country-specific)
-- Ignorant integration (WhatsApp / IG / Snapchat) when installed
-- Public lookup links (Truecaller, NumLookup, WhitePages, etc.)
-- Social search links + Google dorks
-
-### Output
-- Beautiful Flask Web UI (English)
-- CLI with Rich
-- Auto JSON + Markdown + PDF reports
+Deep email scan = Holehe + Maigret on guessed username → **500–600+ checks**.
 
 ---
 
-## Install (Termux recommended)
+## Install
 
 ```bash
-pkg update && pkg upgrade -y
+pkg update && pkg upgrade -y   # Termux
 pkg install python git
 git clone https://github.com/sayan9168/GrokOSINT.git
 cd GrokOSINT
 pip install -r requirements.txt
 
-# Optional deep tools
-pip install holehe ignorant
+# Recommended for large scans:
+pip install holehe ignorant maigret
 ```
 
 ---
@@ -62,19 +47,31 @@ pip install holehe ignorant
 ```bash
 python web_app.py
 ```
-Open: **http://127.0.0.1:5000**
+Open **http://127.0.0.1:5000**
+
+- **Email** — validation, MX, Gravatar, Holehe, Maigret (500 sites on username)
+- **Phone** — carrier, apps, public lookups, Ignorant
+- **Username** — dedicated **top 500 / 600 / 1000** site scan
+- **Full** — email + phone together
 
 ### CLI
 ```bash
 python main.py email someone@gmail.com
 python main.py phone +8801712345678
-python main.py full -e someone@gmail.com -p +8801712345678
+```
+
+### Maigret alone (CLI)
+```bash
+maigret johndoe --top-sites 500
+maigret johndoe --top-sites 600
 ```
 
 ---
 
-## License
+## Notes
 
-MIT — Use ethically.
+- First Maigret run can take **1–5 minutes** (500 sites).
+- Without Maigret installed, username tab still does a small fallback check set.
+- Use ethically. MIT License.
 
 **Built by [Sayan the researcher](https://github.com/sayan9168)**
