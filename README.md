@@ -1,29 +1,24 @@
-# 🛡️ GrokOSINT v2.1 — OSINT Arsenal
+# 🛡️ GrokOSINT v3.0 — Extreme OSINT Arsenal
 
-**Kali-store style ethical OSINT suite** for Termux & desktop.
+**Kali-companion** ethical OSINT suite: **50+ tools** in Store, built-in engines, **Pipeline** chaining.
 
-| Built-in | Like Kali / classic |
-|----------|---------------------|
-| Email OSINT + Holehe | holehe, h8mail |
-| Phone + Ignorant | phoneinfoga-style |
-| Username (Maigret 500+) | sherlock / maigret |
-| Domain DNS + CT + subs | dnsrecon / recon-ng |
-| IP geo + reputation links | dmitry / shodan links |
-| Wayback CDX archive | waybackurls / gau |
-| **🏪 Tool Store** | Kali menu of OSINT tools |
-
-## Ethics
-Public data only. Authorized use only. No exploit packs.
+## Built-in
+Email · Phone · Username (Maigret) · Domain · IP · Wayback · **Pipeline** · **Tool Store**
 
 ## Install
 ```bash
-git clone https://github.com/sayan9168/GrokOSINT.git
-cd GrokOSINT
-pip install -r requirements.txt
-pip install holehe ignorant maigret
+git clone https://github.com/sayan9168/GrokOSINT.git && cd GrokOSINT
+pip install -r requirements.txt && pip install holehe maigret ignorant
 python web_app.py
 ```
 
-Tabs: Email · Phone · Username · Domain · IP · Archive · **Store** · Full
+### Kali
+```bash
+bash scripts/kali_setup.sh
+source .venv/bin/activate && python web_app.py
+```
 
-MIT · [Sayan the researcher](https://github.com/sayan9168)
+## Ethics
+Authorized use only. Store lists nmap/nuclei/ffuf — use only with permission.
+
+MIT · [Sayan](https://github.com/sayan9168)
