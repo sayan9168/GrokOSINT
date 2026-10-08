@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-"""
-GrokOSINT Flask Web UI (Termux friendly - no Streamlit/numpy required)
-Run: python web_app.py
-Then open: http://127.0.0.1:5000
-"""
+"""GrokOSINT / OSINT Evolution — Flask UI (CI-safe)."""
+from __future__ import annotations
 
 import asyncio
 import sys
@@ -14,9 +11,6 @@ from flask import Flask, render_template, request, jsonify
 sys.path.insert(0, str(Path(__file__).parent))
 
 from grok_osint import __version__
-from grok_osint.modules.email_osint import EmailOSINT
-from grok_osint.modules.phone_osint import PhoneOSINT
-from grok_osint.core.reporter import Reporter
 
 app = Flask(__name__)
 app.secret_key = "grokosint-ethical-use-only"
@@ -34,154 +28,104 @@ def run_async(coro):
     return loop.run_until_complete(coro)
 
 
+@app.route("/api/health")
+@app.route("/api/healthz")
+def api_health():
+    import importlib
+    core, optional = {}, {}
+    for name in ("flask", "httpx", "yaml", "dns"):
+        try:
+            importlib.import_module("dns.resolver" if name == "dns" else name)
+            core[name] = True
+        except Exception:
+            core[name] = False
+    for name in ("holehe", "maigret", "ignorant"):
+        try:
+            importlib.import_module(name)
+            optional[name] = True
+        except Exception:
+            optional[name] = False
+    return jsonify(ok=True, version=__version__, codename="Evolution", core=core, optional=optional)
+
+
 @app.route("/")
 def index():
-    return render_template("index.html", version=__version__)
+    try:
+        return render_template("index.html", version=__version__)
+    except Exception:
+        return jsonify(ok=True, app="OSINT Evolution", version=__version__, ui="template missing")
 
 
 @app.route("/api/email", methods=["POST"])
 def api_email():
     data = request.get_json() or {}
     email = (data.get("email") or "").strip()
-    deep = bool(data.get("deep", True))
-
     if not email or "@" not in email:
-        return jsonify({"ok": False, "error": "Valid email required"}), 400
-
+        return jsonify(ok=False, error="Valid email required"), 400
     try:
-        osint = EmailOSINT(deep=deep)
-        result = run_async(osint.run_async(email))
-
-        out = {
-            "ok": True,
-            "email": result.email,
-            "validation": {
+        from grok_osint.modules.email_osint import EmailOSINT
+        result = run_async(EmailOSINT(deep=bool(data.get("deep", True))).run_async(email))
+        return jsonify(
+            ok=True,
+            email=result.email,
+            validation={
                 "is_valid": result.validation.is_valid,
-                "local_part": result.validation.local_part,
-                "domain": result.validation.domain,
                 "is_gmail": result.validation.is_gmail,
-                "is_disposable": result.validation.is_disposable,
+                "domain": result.validation.domain,
             },
-            "has_mx": result.has_mx,
-            "mx_records": result.mx_records,
-            "gravatar": result.gravatar,
-            "username_guesses": getattr(result, "username_guesses", []),
-            "account_checks": getattr(result, "account_checks", []),
-            "holehe_results": getattr(result, "holehe_results", []),
-            "paste_hits": getattr(result, "paste_hits", []),
-            "social_profiles": result.social_profiles,
-            "dorks": result.dorks,
-            "notes": result.notes,
-        }
-
-        reporter = Reporter("reports")
-        reporter.export_all(email_result=result, prefix="email_web", pdf=True)
-        return jsonify(out)
+            has_mx=result.has_mx,
+            mx_records=result.mx_records,
+            notes=result.notes,
+            holehe_results=getattr(result, "holehe_results", []),
+        )
     except Exception as e:
-        return jsonify({"ok": False, "error": str(e)}), 500
+        return jsonify(ok=False, error=str(e)), 500
 
 
 @app.route("/api/phone", methods=["POST"])
 def api_phone():
     data = request.get_json() or {}
     phone = (data.get("phone") or "").strip()
-    region = data.get("region", "BD")
-    deep = bool(data.get("deep", True))
-
     if not phone:
-        return jsonify({"ok": False, "error": "Phone number required"}), 400
-
+        return jsonify(ok=False, error="Phone required"), 400
     try:
-        osint = PhoneOSINT(default_region=region, deep=deep)
-        result = run_async(osint.run_async(phone, region=region))
-
+        from grok_osint.modules.phone_osint import PhoneOSINT
+        region = data.get("region") or "BD"
+        result = run_async(PhoneOSINT(default_region=region).run_async(phone, region=region))
         v = result.validation
-        out = {
-            "ok": True,
-            "original": result.original,
-            "validation": {
-                "is_valid": v.is_valid,
-                "is_possible": v.is_possible,
-                "e164": v.e164,
-                "national": v.national,
-                "international": v.international,
-                "country_code": v.country_code,
-                "country_name": v.country_name,
-                "region": v.region,
-                "carrier": v.carrier_name,
-                "number_type": v.number_type,
-                "timezones": v.timezones,
-            },
-            "formats": result.formats,
-            "possible_apps": getattr(result, "possible_apps", []),
-            "ignorant_results": getattr(result, "ignorant_results", []),
-            "social_links": result.social_links,
-            "dorks": result.dorks,
-            "notes": result.notes,
-        }
-
-        reporter = Reporter("reports")
-        reporter.export_all(phone_result=result, prefix="phone_web", pdf=True)
-        return jsonify(out)
+        return jsonify(ok=True, e164=v.e164, country=v.country_name, carrier=v.carrier_name, notes=result.notes)
     except Exception as e:
-        return jsonify({"ok": False, "error": str(e)}), 500
+        return jsonify(ok=False, error=str(e)), 500
 
 
-@app.route("/api/full", methods=["POST"])
-def api_full():
+@app.route("/api/pipeline", methods=["POST"])
+def api_pipeline():
     data = request.get_json() or {}
-    email = (data.get("email") or "").strip()
-    phone = (data.get("phone") or "").strip()
-    region = data.get("region", "BD")
-    deep = bool(data.get("deep", True))
-
-    if not email and not phone:
-        return jsonify({"ok": False, "error": "Provide at least email or phone"}), 400
-
+    seed = (data.get("seed") or data.get("target") or "").strip()
+    if not seed:
+        return jsonify(ok=False, error="seed required"), 400
     try:
-        email_result = None
-        phone_result = None
-        out = {"ok": True}
-
-        if email and "@" in email:
-            eosint = EmailOSINT(deep=deep)
-            email_result = run_async(eosint.run_async(email))
-            out["email"] = {
-                "input": email_result.email,
-                "is_valid": email_result.validation.is_valid,
-                "is_gmail": email_result.validation.is_gmail,
-                "has_mx": email_result.has_mx,
-                "username_guesses": getattr(email_result, "username_guesses", []),
-                "account_checks": getattr(email_result, "account_checks", []),
-                "holehe_results": getattr(email_result, "holehe_results", []),
-                "notes": email_result.notes,
-            }
-
-        if phone:
-            posint = PhoneOSINT(default_region=region, deep=deep)
-            phone_result = run_async(posint.run_async(phone, region=region))
-            v = phone_result.validation
-            out["phone"] = {
-                "input": phone_result.original,
-                "is_valid": v.is_valid,
-                "e164": v.e164,
-                "country": v.country_name,
-                "carrier": v.carrier_name,
-                "type": v.number_type,
-                "possible_apps": getattr(phone_result, "possible_apps", []),
-                "ignorant_results": getattr(phone_result, "ignorant_results", []),
-                "notes": phone_result.notes,
-            }
-
-        reporter = Reporter("reports")
-        reporter.export_all(email_result=email_result, phone_result=phone_result, prefix="full_web", pdf=True)
-        return jsonify(out)
+        from grok_osint.modules.pipeline import OSINTPipeline
+        r = OSINTPipeline(deep=bool(data.get("deep", False)), top_sites=int(data.get("top_sites") or 100)).run(seed)
+        return jsonify(ok=True, seed=r.seed, seed_type=r.seed_type, steps=r.steps, summary=r.summary, notes=r.notes)
     except Exception as e:
-        return jsonify({"ok": False, "error": str(e)}), 500
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@app.route("/api/playbooks")
+def api_playbooks():
+    try:
+        from grok_osint.modules.playbooks import get_playbooks
+        return jsonify(ok=True, playbooks=get_playbooks(), version=__version__)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@app.route("/api/demo")
+def api_demo():
+    return jsonify(ok=True, targets={"email": "example@example.com", "domain": "example.com", "ip": "1.1.1.1", "username": "github"})
 
 
 if __name__ == "__main__":
-    print(f"\n🛡️  GrokOSINT v{__version__} Web UI")
-    print("   Open in browser: http://127.0.0.1:5000")
-    print("   (On Termux use: http://127.0.0.1:5000 or your phone IP)\n")
+    print(f"OSINT Evolution v{__version__} \u2192 http://127.0.0.1:5000")
     app.run(host="0.0.0.0", port=5000, debug=False)

@@ -1,5 +1,5 @@
 """OSINT Evolution — GrokOSINT platform."""
-__version__ = "9.0.0"
+__version__ = "9.0.1"
 __codename__ = "Evolution"
 __author__ = "Sayan the researcher"
 __license__ = "MIT"
