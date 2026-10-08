@@ -1,17 +1,11 @@
-# 🛡️ GrokOSINT v6.0 — Nexus
+# 🛡️ GrokOSINT v7.0 — Universal
 
-**Cases · Correlate · Full Spectrum · Graph · Playbooks · Docker**
-
-| Module | What |
-|--------|------|
-| 📁 Cases | SQLite workspace — seeds, results, notes |
-| 🔗 Correlate | Shared accounts/IPs/domains across seeds |
-| 🌌 Full Spectrum | All engines + GEXF/JSON/CSV |
-| 📖 Playbooks | Guided runbooks |
+SSE progress · Case PDF · Plugins · HIBP/Shodan · Compare · Auth · Webhook · Favicon · PDNS · i18n · Watches · PWA · Cases · Correlate · Full Spectrum
 
 ```bash
 git clone https://github.com/sayan9168/GrokOSINT.git && cd GrokOSINT
 pip install -r requirements.txt holehe maigret ignorant
+cp config.example.yaml config.yaml
 python web_app.py
 ```
 

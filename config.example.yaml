@@ -1,21 +1,16 @@
-# GrokOSINT Configuration
-# Copy this to config.yaml and fill in optional API keys
-
-# Optional API Keys (leave empty for free-only mode)
 api_keys:
-  hibp: ""          # Have I Been Pwned API key (https://haveibeenpwned.com/API/Key)
-  numverify: ""     # NumVerify API key (https://numverify.com)
-  hunter: ""        # Hunter.io API key (optional enrichment)
-  emailrep: ""      # EmailRep.io API key (optional)
+  hibp: ""
+  numverify: ""
+  hunter: ""
+  emailrep: ""
+  shodan: ""
 
-# Settings
 settings:
   timeout: 15
-  max_concurrent: 10
-  user_agent: "GrokOSINT/1.0 (Ethical Research Tool)"
   export_dir: "reports"
-  language: "en"    # en or bn
+  language: "en"
+  webhook_url: ""
+  auth_password: ""
 
-# Ethical Mode (always true)
 ethical_mode: true
 require_confirmation: true
