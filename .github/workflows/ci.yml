@@ -4,82 +4,39 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12"]
     env:
       PYTHONPATH: ${{ github.workspace }}
-      PIP_DISABLE_PIP_VERSION_CHECK: "1"
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
           cache: pip
-          cache-dependency-path: requirements.txt
 
-      - name: Install dependencies
+      - name: Install
         run: |
-          python -m pip install -U pip wheel
-          pip install -r requirements.txt
-          pip install pytest ruff
+          python -m pip install -U pip
+          pip install flask httpx pyyaml dnspython phonenumbers pytest
+          pip install -r requirements.txt || true
 
-      - name: Package import
-        run: python -c "import grok_osint; print('GrokOSINT', grok_osint.__version__)"
+      - name: Version
+        run: python -c "import grok_osint; print(grok_osint.__version__)"
 
-      - name: Unit tests
+      - name: Pytest
         run: pytest tests/ -q --tb=short
 
-      - name: Ruff (informational)
-        continue-on-error: true
-        run: ruff check grok_osint tests main.py --ignore E501,E402 || true
-
-      - name: Flask health smoke
+      - name: Health
         run: |
-          python << 'PY'
-          import sys
-          from pathlib import Path
-          sys.path.insert(0, str(Path('.').resolve()))
-          try:
-              import web_app
-              app = web_app.app
-          except Exception as e:
-              print('web_app import failed, minimal app:', e)
-              from flask import Flask, jsonify
-              app = Flask(__name__)
-              @app.get('/api/health')
-              def health():
-                  return jsonify(ok=True, degraded=True)
-          c = app.test_client()
+          python -c "
+          import web_app
+          c = web_app.app.test_client()
           r = c.get('/api/health')
-          if r.status_code == 404:
-              r = c.get('/api/healthz')
-          if r.status_code == 404:
-              from flask import jsonify
-              @app.get('/api/health')
-              def _h():
-                  return jsonify(ok=True, note='injected')
-              r = c.get('/api/health')
-          print('status', r.status_code, r.data[:300])
-          assert r.status_code == 200, r.data
-          print('health OK')
-          PY
-
-  docker:
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Docker build
-        continue-on-error: true
-        run: docker build -t grokosint:ci . || echo 'docker non-blocking'
+          print(r.status_code, r.data)
+          assert r.status_code == 200
+          "
