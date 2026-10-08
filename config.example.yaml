@@ -1,16 +1,14 @@
 api_keys:
   hibp: ""
-  numverify: ""
-  hunter: ""
-  emailrep: ""
   shodan: ""
-
 settings:
   timeout: 15
   export_dir: "reports"
   language: "en"
   webhook_url: ""
   auth_password: ""
-
+  request_delay_ms: 0
+  user_agent: "GrokOSINT/8.0 (Ethical Research)"
+  proxy: ""
+  opsec_mode: false
 ethical_mode: true
-require_confirmation: true
