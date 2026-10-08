@@ -1,0 +1,26 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt && python -c "import grok_osint; print(grok_osint.__version__)"
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          body: |
+            **OSINT Evolution** `${{ github.ref_name }}`
+            ```bash
+            git clone https://github.com/${{ github.repository }}.git
+            cd GrokOSINT && pip install -r requirements.txt && python web_app.py
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
